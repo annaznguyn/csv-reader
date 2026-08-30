@@ -1,4 +1,6 @@
-.DS_Store
-
-data.db
-data.csv
+*
+!.gitignore
+!db.py
+!generate_data.py
+!main.py
+!requirements.txt
