@@ -89,6 +89,8 @@ def select_page(page=1, page_size=100):
 
     start_index = (page - 1) * page_size
 
+    started = time.perf_counter()
+    
     cursor.execute(
         """
         SELECT id, name, email, phone, city, company
@@ -107,10 +109,14 @@ def select_page(page=1, page_size=100):
 
     close_connection(conn, cursor)
 
+    total_time = time.perf_counter() - started
+    rows_per_second = len(rows)/total_time
+
     return {
         "page": page,
         "size": page_size,
-        "rows": rows,
+        "rows_per_second": rows_per_second,
+        "rows": rows
     }
 
 if __name__ == "__main__":
