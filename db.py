@@ -84,23 +84,34 @@ def import_csv():
 
     return {"rows_per_second": rows_per_second}
 
-def select_top_rows():
+def select_page(page=1, page_size=100):
     conn, cursor = get_connection()
+
+    start_index = (page - 1) * page_size
 
     cursor.execute(
         """
         SELECT id, name, email, phone, city, company
         FROM data
-        LIMIT 10
-        """
+        ORDER BY id
+        LIMIT ? OFFSET ?
+        """,
+        (page_size, start_index),
     )
 
     columns = ["id", "name", "email", "phone", "city", "company"]
 
-    rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    rows = []
+    for row in cursor.fetchall():
+        rows.append(dict(zip(columns, row)))
+
     close_connection(conn, cursor)
 
-    return rows
+    return {
+        "page": page,
+        "size": page_size,
+        "rows": rows,
+    }
 
 if __name__ == "__main__":
-    print(select_top_rows())
+    print(select_page())

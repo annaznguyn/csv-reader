@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
-from db import create_table, delete_table, import_csv
+from db import create_table, delete_table, import_csv, select_page
 
 app = FastAPI()
 
@@ -20,17 +20,6 @@ def read_csv():
 
 # handle pagination
 # - 100 rows per page
-@app.post("/display")
-async def display(content):
-    return content
-    # json = {}
-    # headers = DATA[0]
-
-    # for i in range(1, len(DATA)):
-    #     temp = {}
-    #     for j in range(len(DATA[i])):
-    #         temp[headers[j]] = DATA[i][j]
-
-    #     json[i] = temp
-    
-    # return json
+@app.get("/display")
+def display(page: int = Query(1, ge=1)):
+    return select_page(page)
